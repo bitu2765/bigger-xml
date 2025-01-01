@@ -46,7 +46,6 @@ class _ElementWrapper:
 
     def findAll(self,key):
         result_arr = xmlmodule.findAll(self.ptr,key)
-        print(result_arr)
         final_result= []
         for i,capsule in enumerate(result_arr):
             final_result.append(_ElementWrapper(capsule))
@@ -77,3 +76,9 @@ class etree:
     def SubElement(parent,key):
         element = xmlmodule.childElement(parent.ptr,key)
         return _ElementWrapper(element)
+    
+    @staticmethod
+    def remove(element):
+        xmlmodule.deleteElement(element.ptr)
+        element.ptr = None
+    

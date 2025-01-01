@@ -45,6 +45,7 @@ typedef struct {
     struct Element* next;
     struct Element* previous;
     struct Element* startChild;
+    struct Element* parent;
     struct Element* endChild;
     struct Attribute* attr;
 } Element;
@@ -69,6 +70,7 @@ Element* CreateElement(char* tag){
     e->tag = strdup(tag);
     e->text = NULL;
     e->startChild = NULL;
+    e->parent = NULL;
     e->endChild = NULL;
     e->next = NULL;
     e->previous = NULL;
@@ -152,6 +154,7 @@ static PyObject* childElement(PyObject* self, PyObject* args) {
         child->previous = temp;
         parent->endChild = child;
     }
+    child->parent = parent;
 
     return childCapsule;
 }
@@ -175,6 +178,51 @@ static PyObject* baseElement(PyObject* self, PyObject* args) {
     }
 
     return capsule;
+}
+
+// Delete Tag
+
+// Set Text For XML Tag
+static PyObject* deleteElement(PyObject* self, PyObject* args) {
+    PyObject* rootCapsule;
+
+    // Parse the input argument (capsule)
+    if (!PyArg_ParseTuple(args, "O", &rootCapsule)) {
+        return NULL;
+    }
+
+    Element* root = (Element*)PyCapsule_GetPointer(rootCapsule, CAPSULE_NAME);
+    Element* parent = root->parent;
+    Element* pre = root->previous;
+    Element* next = root->next;
+
+
+    if(parent == NULL){
+        Py_RETURN_NONE;
+    } else {
+        if(pre == NULL){
+            if(next == NULL){
+                parent -> startChild = NULL;
+                parent -> endChild = NULL;
+            } else {
+                parent->startChild = next;
+                root -> next = NULL;
+            }
+        } else {
+            if(next == NULL){
+                parent -> endChild = pre;
+                pre -> next = NULL;
+                root -> previous = NULL;
+            } else {
+                pre -> next = next;
+                next -> previous = pre;
+                root -> previous = NULL;
+                root -> next = NULL;
+            }
+        }
+    }
+    FreeMemory(root);
+    Py_RETURN_NONE;
 }
 
 
@@ -346,13 +394,13 @@ static PyObject* generateXML(PyObject* self, PyObject* args){
         return NULL;
     }
 
-    // <?xml version="1.0" encoding="UTF-8"?>
     if(xmlDeclaration){
         fprintf(file,"<?xml version=\'1.0\' encoding=\'");
         fprintf(file,encoding);
         fprintf(file,"\'?>\n");
     }
     SaveXML(root,spacingStr,file);
+    fclose(file);
     return self;
 }
 
@@ -378,6 +426,7 @@ static PyObject* setText(PyObject* self, PyObject* args) {
 static PyMethodDef methods[] = {
     {"baseElement", baseElement, METH_VARARGS, "Create Base XML Tag"},
     {"childElement", childElement, METH_VARARGS, "Add XML tag inside as child tag to any existing XML tag"},
+    {"deleteElement", deleteElement, METH_VARARGS, "Add XML tag inside as child tag to any existing XML tag"},
     {"setText", setText, METH_VARARGS, "Add text to any XML Tag"},
     {"generateXML", generateXML, METH_VARARGS, "Generate and save XML."},
     {"findAll", findAll, METH_VARARGS, "Search and fild all tags matches with search string"},

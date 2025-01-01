@@ -40,7 +40,7 @@ setup(
     long_description_content_type="text/markdown",  # Format of the long description
     author="Bhautik Sudani",
     author_email="bhautiksudani2765@gmail.com",
-    # url="https://github.com/yourusername/my_package",  # Optional: Link to your package repository
+    url="https://github.com/bitu2765/bxml",  # Optional: Link to your package repository
     classifiers=[  # Optional: Classifiers to help users find your package
         "Programming Language :: Python :: 3",
         "Programming Language :: C",
