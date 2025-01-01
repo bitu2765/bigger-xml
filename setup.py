@@ -29,8 +29,8 @@ my_c_extension = Extension(
 )
 
 setup(
-    name="bxml",  # The name of your package
-    version="0.0.1",    # The version of your package
+    name="bigger-xml",  # The name of your package
+    version="0.0.2",    # The version of your package
     packages=['bxml'],  # Automatically find packages in the current directory
     ext_modules=[my_c_extension],
     install_requires=[  # External dependencies (if any)
