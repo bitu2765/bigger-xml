@@ -1,9 +1,9 @@
-# What is bxml ?
+# What is bigger-xml ?
 
 #### A Python library designed for efficiently generating large XML files. BXML leverages a native C extension to store and process data, enabling it to manage substantial datasets and generate XMLs with improved performance.
 
 
-## Some key benefits of using the BXML library:
+## Some key benefits of using the bigger-xml library:
 
 1. **Enhanced Performance with C Language:** Utilizes C programming to optimize the addition of new XML elements, attributes, and the overall process of generating and saving XML files.
 
